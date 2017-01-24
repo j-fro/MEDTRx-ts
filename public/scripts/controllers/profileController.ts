@@ -1,83 +1,88 @@
-angular.module('msApp').controller('ProfileController', ['$scope', '$http', '$window', 'AuthFactory', function($scope, $http, $window, AuthFactory) {
+interface IDevice {
+    device_id: number
+}
+
+interface IReminder {
+    reminder_time: string
+}
+
+interface IContact {
+    id: number
+    contact: string
+}
+
+angular.module('msApp').controller('ProfileController', ['$scope', '$http', '$window', 'AuthFactory', ($scope, $http, $window, AuthFactory) => {
     console.log('profile');
     $scope.saved = false;
     $scope.registeredDevice = false;
 
     AuthFactory.isLoggedIn()
-        .then(function(result) {
+        .then((result: ng.IHttpPromiseCallbackArg<Object>) => {
             if (result.status === 200) {
                 $scope.loggedIn = true;
             } else {
                 $window.location.href = '#!/login';
             }
         })
-        .catch(function(err) {
+        .catch((err: ng.IHttpPromiseCallbackArg<Object>) => {
             console.log(err);
             $window.location.href = '#!/login';
         });
 
-    $scope.existingDevice = function() {
+    $scope.existingDevice = () => {
         $http.get('/organizer/device')
-            .then(function(result) {
+            .then((result: ng.IHttpPromiseCallbackArg<IDevice>) => {
                 console.log(result);
                 $scope.deviceId = result.data.device_id;
                 $scope.registeredDevice = true;
             })
-            .catch(function(err) {
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => {
                 console.log(err);
                 $scope.registeredDevice = false;
             });
     };
 
-    $scope.registerDevice = function() {
+    $scope.registerDevice = () => {
         $http.put('/organizer', {
                 deviceId: $scope.deviceIdIn
             })
-            .then(function(response) {
+            .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
                 console.log(response);
                 if (response.status === 200) {
                     $scope.saved = true;
                     $scope.existingDevice();
                 }
             })
-            .catch(function(err) {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
-    $scope.existingReminder = function() {
+    $scope.existingReminder = () => {
         $http.get('/reminder')
-            .then(function(response) {
+            .then((response: ng.IHttpPromiseCallbackArg<IReminder>) => {
                 $scope.reminderTime = response.data.reminder_time;
             })
-            .catch(function(err) {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
-    $scope.saveReminder = function() {
+    $scope.saveReminder = () => {
         $http.put('/reminder', {
                 reminderTime: $scope.reminderTimeIn
             })
-            .then(function(response) {
+            .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
                 $scope.saved = true;
             })
-            .catch(function(err) {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
     $scope.existingContact = () => {
         $http.get('/contact')
-            .then((response) => {
+            .then((response: ng.IHttpPromiseCallbackArg<Array<IContact>>) => {
                 $scope.contacts = response.data;
-                response.data.forEach(function(contact) {
+                response.data.forEach((contact) => {
                     $scope.contactValues[contact.id] = contact.contact;
                 });
             })
-            .catch((err) => {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
     $scope.saveContact = () => {
@@ -87,19 +92,17 @@ angular.module('msApp').controller('ProfileController', ['$scope', '$http', '$wi
         };
 
         $http.post('/contact', contactToSend)
-            .then(function(response) {
+            .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
                 if (response.status === 201) {
                     $scope.saved = true;
                     $scope.contact = undefined;
                     $scope.existingContact();
                 }
             })
-            .catch(function(err) {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
-    $scope.editContact = function(contact) {
+    $scope.editContact = (contact: IContact) => {
         var newContact = $scope.contactValues[contact.id];
         console.log('Editing contact:', contact);
         console.log('And its new value is:', newContact);
@@ -109,28 +112,24 @@ angular.module('msApp').controller('ProfileController', ['$scope', '$http', '$wi
                 contact: newContact
             };
             $http.put('/contact', contactToSend)
-                .then(function(response) {
+                .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
                     $scope.saved = true;
                     $scope.existingContact();
                 })
-                .catch(function(err) {
-                    console.log(err);
-                });
+                .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
         }
     };
 
-    $scope.removeContact = function(contactId) {
+    $scope.removeContact = (contactId: number) => {
         $http.delete('/contact/' + contactId)
-            .then(function(response) {
+            .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
                 $scope.saved = true;
                 $scope.existingContact();
             })
-            .catch(function(err) {
-                console.log(err);
-            });
+            .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 
-    $scope.init = function() {
+    $scope.init = () => {
         $scope.existingDevice();
         $scope.existingContact();
         $scope.existingReminder();

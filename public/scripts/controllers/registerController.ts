@@ -1,23 +1,19 @@
-angular.module('msApp').controller('RegisterController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('msApp').controller('RegisterController', ['$scope', '$http', '$window', ($scope, $http, $window) => {
     console.log('register');
-    $scope.register = function() {
+    $scope.register = () => {
         console.log('registering');
-        // TODO add authentication first
-        // $window.location.href = '/login';
         var userToSend = {
             email: $scope.emailIn,
             password: $scope.passwordIn,
             deviceId: $scope.deviceIdIn
         };
         $http.post('register/', userToSend)
-        .then(function(response) {
+        .then((response: ng.IHttpPromiseCallbackArg<Object>) => {
             console.log(response);
             if(response.status === 201) {
                 $window.location.href = '/';
             }
         })
-        .catch(function(err) {
-            console.log(err);
-        });
+        .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 }]);

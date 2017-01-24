@@ -1,6 +1,10 @@
+/// <reference path="../../node_modules/@types/angular/index.d.ts" />
+/// <reference path="../../node_modules/@types/angular-route/index.d.ts" />
+/// @types {angular.Module}
+
 var msApp = angular.module('msApp', ['ngRoute']);
 
-msApp.config(['$routeProvider', function($routeProvider) {
+msApp.config(['$routeProvider', ($routeProvider: angular.route.IRouteProvider) => {
     $routeProvider
         .when('/login', {
             templateUrl: 'views/partials/login.html',
