@@ -1,4 +1,4 @@
-angular.module('msApp').controller('LoginController', ['$scope', '$http', '$window', function($scope, $http, $window) {
+angular.module('msApp').controller('LoginController', ['$scope', '$http', '$window', ($scope, $http, $window) => {
     console.log('login');
     $scope.login = function() {
         console.log('logging in');
@@ -7,12 +7,10 @@ angular.module('msApp').controller('LoginController', ['$scope', '$http', '$wind
             password: $scope.passwordIn
         };
         $http.post('/login', toSend)
-        .then(function(result) {
+        .then((result: ng.IHttpPromiseCallbackArg<Object>) => {
             console.log('Success:', result);
             $window.location.href = '/';
         })
-        .catch(function(err) {
-            console.log('Error', err);
-        });
+        .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
     };
 }]);

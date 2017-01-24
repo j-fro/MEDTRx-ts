@@ -1,19 +1,17 @@
-angular.module('msApp').controller('NavController', ['$scope', '$window', 'AuthFactory', function($scope, $window, AuthFactory) {
+angular.module('msApp').controller('NavController', ['$scope', '$window', 'AuthFactory', ($scope, $window, AuthFactory) => {
     console.log('Nav controller load');
     $scope.loggedIn = false;
     AuthFactory.isLoggedIn()
-    .then(function(result) {
+    .then((result: ng.IHttpPromiseCallbackArg<Object>) => {
         if(result.status === 200) {
             $scope.loggedIn = true;
         }
     })
-    .catch(function(err) {
-        console.log(err);
-    });
+    .catch((err: ng.IHttpPromiseCallbackArg<Object>) => console.log(err));
 
-    $scope.logout = function() {
+    $scope.logout = () => {
         AuthFactory.logout()
-            .then(function(response) {
+            .then(() => {
                 $scope.loggedIn = false;
                 $window.location.href='/';
             });

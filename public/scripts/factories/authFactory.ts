@@ -1,4 +1,6 @@
-angular.module('msApp').factory('AuthFactory', function($http) {
+/// <reference path="../../../node_modules/@types/angular/index.d.ts" />
+
+angular.module('msApp').factory('AuthFactory', ($http: ng.IHttpService) => {
     var Status = {
         loggedIn: false,
     };
@@ -15,7 +17,7 @@ angular.module('msApp').factory('AuthFactory', function($http) {
             return $http.get('/login');
         },
 
-        setLoggedIn: function(value) {
+        setLoggedIn: function(value: boolean) {
             Status.loggedIn = value;
         },
 
